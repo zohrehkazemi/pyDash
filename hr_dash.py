@@ -1,18 +1,18 @@
 import dash_bootstrap_components as dbc
-import plotly.express as px
+#import plotly.express as px
 
-import matplotlib.pyplot as plt
-import numpy as np
-from plotly.tools import mpl_to_plotly
-import webbrowser
-from threading import Timer
+#import matplotlib.pyplot as plt
+#import numpy as np
+#from plotly.tools import mpl_to_plotly
+#import webbrowser
+#from threading import Timer
 
 import random
 import pandas as pd
 import plotly.express as px
-pd.options.mode.chained_assignment = None  # default='warn'
+#pd.options.mode.chained_assignment = None  # default='warn'
 from dash import Dash, html, dcc, Input, Output,dash_table
-import plotly.graph_objects as go
+#import plotly.graph_objects as go
 
 url="https://raw.githubusercontent.com/zohrehkazemi/pyDash/main/c-sample.csv"
 
