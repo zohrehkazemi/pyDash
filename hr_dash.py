@@ -24,8 +24,8 @@ data = pd.read_csv(r"c-sample.csv",encoding='windows-1254')
 
 hire= data.loc[:,['Hire Date']]
 hire_date = pd.to_datetime(data["Hire Date"])
-print("last hire date:  ",max(hire_date))
-print("first hire date:  ",min(hire_date))
+#print("last hire date:  ",max(hire_date))
+#print("first hire date:  ",min(hire_date))
 hire_df=pd.DataFrame(hire_date)
 hire_df['year']=hire_df['Hire Date'].dt.year
 hire_df['month']=hire_df['Hire Date'].dt.month
@@ -42,8 +42,8 @@ last_hire_df_in_year=hire_dataframe.sort_values(by=['year', 'Number of employees
 exit=((data.loc[:, ['Exit Date']]))
 exit_date= pd.to_datetime(data["Exit Date"])
 
-print("last Exit date:  ",max(exit_date))
-print("first Exit date:  ",min(exit_date))
+#print("last Exit date:  ",max(exit_date))
+#print("first Exit date:  ",min(exit_date))
 exit_df=pd.DataFrame(exit_date)
 exit_df['year-x']=exit_df['Exit Date'].dt.year
 exit_df['month-x']=exit_df['Exit Date'].dt.month
@@ -65,7 +65,7 @@ result = pd.concat([last_hire_df_in_year,last_exit_df_in_year], axis=1).reindex(
 result = result.drop('year-x', axis=1)
 result=result.fillna(0)
 
-print(result)
+#print(result)
 
 #############################################################per dep
 
@@ -98,14 +98,14 @@ last_exit_datafram=pd.DataFrame({'department':exit_dep_list,
                                  'exit_per_dep':exit_dep_num_list,
                                 'The number of people hired in each department':hire_dep_num_list})
 
-print(last_exit_datafram)
+#print(last_exit_datafram)
 
 ################################per dep
 
 female=data['Gender'].value_counts()['Female']
-print("number of female is :",female)
+#print("number of female is :",female)
 male=data['Gender'].value_counts()['Male']
-print("number of male is :",male)
+#print("number of male is :",male)
 sum_employee=male+female
 
 sum_exit_employee=sum(num_employee_in_year_exit)
@@ -126,7 +126,7 @@ countryDf=pd.DataFrame({'Country':name_country,'Number':number_country_list})
 
 ############################Gender and Age processing########################################
 age=((data.loc[:, ['Age']]))
-print(age.describe())
+#print(age.describe())
 count0=0
 count1=0
 count2=0
@@ -147,12 +147,12 @@ for i in  data['Age']:
         count4+=1
     else:
         count5+=1
-print("under 25=",count0)
+"""print("under 25=",count0)
 print("25-35 =:",count1)
 print("35-45 =:",count2)
 print("45-55 =:",count3)
 print("55-65 =:",count4)
-print(">65:",count5)
+print(">65:",count5)"""
 total_number=[count0,count1,count2,count3,count4,count5]
 ageRange=['under 25','25-35','35-45','45-55','55-65','>65']
 ageDf=pd.DataFrame({'Age Range':ageRange,'Number':total_number})
@@ -161,7 +161,7 @@ ageDf=pd.DataFrame({'Age Range':ageRange,'Number':total_number})
 labels_age=['25-35','35-45','45-55','55-65','>65']
 bins_age=[25,35,45,55,65,66]
 data['AgeGroup Age'] = pd.cut(data['Age'], bins=bins_age, labels=labels_age, right=False)
-print(data)
+#print(data)
 last=data[['AgeGroup Age','Gender']].groupby('AgeGroup Age').value_counts()
 
 
@@ -171,7 +171,7 @@ last=data[['AgeGroup Age','Gender']].groupby('AgeGroup Age').value_counts()
 #print("number of male is :",male)
 count_gender= data['Gender'].value_counts()
 genderDf=pd.DataFrame({'Gender':data['Gender'].value_counts().keys(),'Number':data['Gender'].value_counts()})
-print((genderDf))
+#print((genderDf))
 sum_employee=male+female
 perfemal=(female/sum_employee)*100
 permale=(male/sum_employee)*100
@@ -181,9 +181,9 @@ salary=((data.loc[:,['Annual Salary']]))
 firstsalary = data['Annual Salary'].str.extract(r'(\d......)', expand=False)
 final_salary=firstsalary.str.replace(',','')
 numbers = pd.to_numeric(final_salary)
-print(sum(numbers))
+#print(sum(numbers))
 number_df=pd.DataFrame(numbers)
-print(number_df)
+#print(number_df)
 salaryDf=pd.DataFrame({'count':numbers.describe().keys(),'Annual Salary':round(numbers.describe())  })
 
 salaryDf=salaryDf.drop('count')
@@ -215,17 +215,17 @@ data= data[~zero]
 
 data1=pd.DataFrame(data[['int_bon','Job Title','Department']].groupby('Department').value_counts())
 
-print(zerobon,contain_bon,total_bon)
+"""print(zerobon,contain_bon,total_bon)
 print(data['int_bon'].describe())
 
 print(data['Job Title'].value_counts(sort=False).sort_index(ascending=True).keys().tolist())
-print(data['Job Title'].value_counts(sort=False).sort_index(ascending=True).tolist())
+print(data['Job Title'].value_counts(sort=False).sort_index(ascending=True).tolist())"""
 jobDf_bon=pd.DataFrame({'jobs':data['Job Title'].value_counts(sort=False).sort_index(ascending=True).keys().tolist(),
                         'count':data['Job Title'].value_counts(sort=False).sort_index(ascending=True).tolist()})
 
 
 
-print(data[['int_bon','Job Title']].groupby('int_bon').value_counts().keys())
+#print(data[['int_bon','Job Title']].groupby('int_bon').value_counts().keys())
 
 labels=['5-10','10-20','20-30','30-40']
 bins=[5,10,20,30,40]
