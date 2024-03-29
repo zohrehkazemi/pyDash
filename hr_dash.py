@@ -14,9 +14,9 @@ pd.options.mode.chained_assignment = None  # default='warn'
 from dash import Dash, html, dcc, Input, Output,dash_table
 import plotly.graph_objects as go
 
+url="https://raw.githubusercontent.com/zohrehkazemi/pyDash/main/c-sample.csv"
 
-
-data = pd.read_csv(r"c-sample.csv",encoding='windows-1254')
+data = pd.read_csv(url)
 
 
 
