@@ -258,7 +258,7 @@ def bounFigure():
                     figure=px.pie(ageDf, names='Age Range',
                                    values='Number',
                                    color='Age Range',
-                                  title="نمودار توزیع کارکنان بر حسب سن").update_layout(
+                                  title="age chart").update_layout(
                         template='plotly_dark',
                         plot_bgcolor= 'rgba(0, 0, 0, 0)',
                         paper_bgcolor= 'rgba(0, 0, 0, 0)',
@@ -317,7 +317,7 @@ def exitdepFigure():
                     figure=px.bar(last_exit_datafram, x='department',
                                    y='The number of people hired in each department',
                                    color='exit_per_dep',
-                                  title="نمودار استخدام و خروج کارکنان هر بخش").update_layout(
+                                  title="hire and exit chart").update_layout(
                         template='plotly_dark',
                         plot_bgcolor= 'rgba(0, 0, 0, 0)',
                         paper_bgcolor= 'rgba(0, 0, 0, 0)',
