@@ -16,7 +16,7 @@ from dash import Dash, html, dcc, Input, Output,dash_table
 
 url="https://raw.githubusercontent.com/zohrehkazemi/pyDash/main/c-sample.csv"
 
-data = pd.read_csv(url)
+data = pd.read_csv(url,encoding='windows-1254')
 
 
 
