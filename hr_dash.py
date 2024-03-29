@@ -248,7 +248,7 @@ roundbutton = {
 }
 
 app = Dash(external_stylesheets=[dbc.themes.JOURNAL,dbc.themes.SOLAR])
-
+server=app.server
 
 def bounFigure():
     return html.Div([
@@ -716,11 +716,10 @@ def bouns(value):
 
 #port = 5000 # or simply open on the default `8050` port
 
-def open_browser():
-	webbrowser.open_new("http://localhost:{}".format(8888))
+#def open_browser():
+	#webbrowser.open_new("http://localhost:{}".format(8888))
 
 # Run app and display result inline in the notebook
 
 if __name__ == '__main__':
-    Timer(1, open_browser).start();
-    app.run_server(debug=True,host='5.144.130.124', port=8888)
+    app.run_server(debug=True)
