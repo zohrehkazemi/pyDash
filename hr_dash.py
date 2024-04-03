@@ -423,8 +423,8 @@ def drawText5():
 app.layout =html.Div([
 html.Div(children=[
     html.Div(children=[
-        html.H1('Foulad Asin Company', style={'backgroundColor': 'darkslategray', 'color': 'white','font_family': 'Algerian','font-weight': 'bold'}),
-        html.H3('Human resources dashboard', style={'fontsize': '100'}),
+        html.H1('Steel Company', style={'backgroundColor': 'darkslategray', 'color': 'white','font_family': 'Algerian','font-weight': 'bold'}),
+        html.H3('Human Resources dashboard', style={'fontsize': '100'}),
         html.H3('by Zohreh Kazemi'),
         html.Hr(),
         #html.Button([attrition_rate, '%', html.Br(), "نرخ خروج"], style=roundbutton),
