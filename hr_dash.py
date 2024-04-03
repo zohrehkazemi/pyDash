@@ -201,51 +201,38 @@ salaryDf= salaryDf.reset_index(drop=True)
 help_list=data[["Department","Bonus %"]].groupby("Department").value_counts()
 int_bon=data['Bonus %'].str.extract(r'(\d.)', expand=False)
 int_bon=int_bon.str.replace('%','')
-data['int_bon'] = pd.to_numeric(int_bon)
+data['bonus%'] = pd.to_numeric(int_bon)
 jobs=data['Job Title'].value_counts(sort=False).sort_index(ascending=True).keys().tolist()
 number_employee_per_job=data['Job Title'].value_counts(sort=False).sort_index(ascending=True).tolist()
 jobDf=pd.DataFrame({'jobs':jobs,'number employee':number_employee_per_job})
 
-zerobon=data['int_bon'].value_counts()[0]
-contain_bon=data['int_bon'].value_counts().sum()
+zerobon=data['bonus%'].value_counts()[0]
+contain_bon=data['bonus%'].value_counts().sum()
 
 total_bon=contain_bon-zerobon
-zero = data['int_bon'] == 0
+zero = data['bonus%'] == 0
 data= data[~zero]
 
-data1=pd.DataFrame(data[['int_bon','Job Title','Department']].groupby('Department').value_counts())
+data1=pd.DataFrame(data[['bonus%','Job Title','Department']].groupby('Department').value_counts())
 
 """print(zerobon,contain_bon,total_bon)
-print(data['int_bon'].describe())
+print(data['bonus%'].describe())
 
 print(data['Job Title'].value_counts(sort=False).sort_index(ascending=True).keys().tolist())
 print(data['Job Title'].value_counts(sort=False).sort_index(ascending=True).tolist())"""
+
 jobDf_bon=pd.DataFrame({'jobs':data['Job Title'].value_counts(sort=False).sort_index(ascending=True).keys().tolist(),
                         'count':data['Job Title'].value_counts(sort=False).sort_index(ascending=True).tolist()})
 
 
 
-#print(data[['int_bon','Job Title']].groupby('int_bon').value_counts().keys())
+#print(data[['bonus%','Job Title']].groupby('bonus%').value_counts().keys())
 
 labels=['5-10','10-20','20-30','30-40']
 bins=[5,10,20,30,40]
-data['AgeGroup Bonus'] = pd.cut(data['int_bon'], bins=bins, labels=labels, right=False)
+data['AveGroup Bonus'] = pd.cut(data['bonus%'], bins=bins, labels=labels, right=False)
 
 #******************************************************************************************##
-roundbutton = {
-    "border": None,
-    "border-radius": "70%",
-    "padding": 0,
-    "backgroundColor": "#98B5FF",
-    "color": "year",
-    "textAlign": "center",
-    "display": "h",
-    "fontSize": 10,
-    "height":90,
-    "width": 90,
-    "margin":30,
-
-}
 
 app = Dash(external_stylesheets=[dbc.themes.JOURNAL,dbc.themes.SOLAR])
 server=app.server
@@ -677,6 +664,9 @@ def bouns(value):
                                                 xaxis_title="",
                                                 yaxis_title="",
                                                 title_x=.5,
+		                                xaxis_title="Number",
+                                                yaxis_title="Jobs",
+
 
 
 
@@ -696,20 +686,26 @@ def bouns(value):
                                                 xaxis_title="",
                                                 yaxis_title="",
                                                 title_x=.5,
+		                                xaxis_title="Jobs",
+                                                yaxis_title="Number",
+
 
 
                     )
 
 
     else:
-        return px.bar(data,x='Job Title',y='int_bon',
-                      color='AgeGroup Bonus',color_discrete_sequence=px.colors.sequential.Rainbow_r,title="Bonus range of each job position").update_yaxes(showticklabels=False).update_layout(
+        return px.bar(data,x='Job Title',y='bonus%',
+                      color='AveGroup Bonus',color_discrete_sequence=px.colors.sequential.Rainbow_r,title="Bonus range of each job position").update_yaxes(showticklabels=False).update_layout(
                      template='plotly_dark',
                      plot_bgcolor='rgba(0, 0, 0, 0)',
                      paper_bgcolor='rgba(0, 0, 0, 0)',
                      xaxis_title="",
                      yaxis_title="",
                      title_x=.5,
+		     xaxis_title="Jobs",
+                     yaxis_title="Average Bonus% (It is displayed on the bar)",
+
 
         )
 
