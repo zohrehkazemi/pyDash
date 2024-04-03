@@ -413,7 +413,7 @@ def drawText5():
         dbc.Card(
             dbc.CardBody([
                 html.Div([
-                    html.H2([female, '  👩🏻‍🦰' , html.Br(),male, "  🧑🏻‍💼",],style={'color':'silver','font-weight':'bold'}),
+                    html.H2([female, '👩🏻‍🦰' , html.Br(),male, "🧑🏻‍💼",],style={'color':'silver','font-weight':'bold'}),
 
                 ], style={'textAlign': 'center'})
             ])
@@ -661,8 +661,6 @@ def bouns(value):
                                                 template='plotly_dark',
                                                 plot_bgcolor= 'rgba(0, 0, 0, 0)',
                                                 paper_bgcolor= 'rgba(0, 0, 0, 0)',
-                                                xaxis_title="",
-                                                yaxis_title="",
                                                 title_x=.5,
 		                                xaxis_title="Number",
                                                 yaxis_title="Jobs",
@@ -683,8 +681,6 @@ def bouns(value):
                                                 template='plotly_dark',
                                                 plot_bgcolor= 'rgba(0, 0, 0, 0)',
                                                 paper_bgcolor= 'rgba(0, 0, 0, 0)',
-                                                xaxis_title="",
-                                                yaxis_title="",
                                                 title_x=.5,
 		                                xaxis_title="Jobs",
                                                 yaxis_title="Number",
@@ -700,8 +696,6 @@ def bouns(value):
                      template='plotly_dark',
                      plot_bgcolor='rgba(0, 0, 0, 0)',
                      paper_bgcolor='rgba(0, 0, 0, 0)',
-                     xaxis_title="",
-                     yaxis_title="",
                      title_x=.5,
 		     xaxis_title="Jobs",
                      yaxis_title="Average Bonus% (It is displayed on the bar)",
