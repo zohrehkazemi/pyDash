@@ -19,7 +19,6 @@ url="https://raw.githubusercontent.com/zohrehkazemi/pyDash/main/c-sample.csv"
 data = pd.read_csv(url,encoding='windows-1254')
 
 
-
 ##########################_____Hire Date  process_____##############################
 
 hire= data.loc[:,['Hire Date']]
@@ -93,12 +92,11 @@ exit_dep_list=exit_dep_df['Department'].value_counts(sort=False).sort_index(asce
 exit_dep_num_list=exit_dep_df['Department'].value_counts(sort=False).sort_index(ascending=True).tolist()
 hire_dep_num_list=hire_dep_df['Department'].value_counts(sort=False).sort_index(ascending=True).tolist()
 
+dep_datafram=pd.DataFrame({'Department':exit_dep_list,
+                                 'Exit':exit_dep_num_list,
+                                'Hire':hire_dep_num_list})
 
-last_exit_datafram=pd.DataFrame({'department':exit_dep_list,
-                                 'exit_per_dep':exit_dep_num_list,
-                                'The number of people hired in each department':hire_dep_num_list})
-
-#print(last_exit_datafram)
+#print(dep_datafram)
 
 ################################per dep
 
@@ -216,21 +214,25 @@ data= data[~zero]
 data1=pd.DataFrame(data[['bonus%','Job Title','Department']].groupby('Department').value_counts())
 
 """print(zerobon,contain_bon,total_bon)
-print(data['bonus%'].describe())
+print(data['int_bon'].describe())
 
 print(data['Job Title'].value_counts(sort=False).sort_index(ascending=True).keys().tolist())
 print(data['Job Title'].value_counts(sort=False).sort_index(ascending=True).tolist())"""
-
 jobDf_bon=pd.DataFrame({'jobs':data['Job Title'].value_counts(sort=False).sort_index(ascending=True).keys().tolist(),
                         'count':data['Job Title'].value_counts(sort=False).sort_index(ascending=True).tolist()})
 
 
 
-#print(data[['bonus%','Job Title']].groupby('bonus%').value_counts().keys())
+#print(data[['int_bon','Job Title']].groupby('int_bon').value_counts().keys())
 
 labels=['5-10','10-20','20-30','30-40']
 bins=[5,10,20,30,40]
-data['AveGroup Bonus'] = pd.cut(data['bonus%'], bins=bins, labels=labels, right=False)
+data['AveGroup Bonus%'] = pd.cut(data['bonus%'], bins=bins, labels=labels, right=False)
+
+"""print(max(data['bonus%']))
+print(data['AveGroup Bonus'].value_counts())
+print(data[['AveGroup Bonus','Job Title']].groupby('Job Title').value_counts())"""
+
 
 #******************************************************************************************##
 
@@ -245,7 +247,7 @@ def bounFigure():
                     figure=px.pie(ageDf, names='Age Range',
                                    values='Number',
                                    color='Age Range',
-                                  title="age chart").update_layout(
+                                  title="نمودار توزیع کارکنان بر حسب سن").update_layout(
                         template='plotly_dark',
                         plot_bgcolor= 'rgba(0, 0, 0, 0)',
                         paper_bgcolor= 'rgba(0, 0, 0, 0)',
@@ -296,15 +298,15 @@ def countryFigure():
     ])
 
 
-def exitdepFigure():
+"""def exitdepFigure():
     return html.Div([
         dbc.Card(
             dbc.CardBody([
                 dcc.Graph(
-                    figure=px.bar(last_exit_datafram, x='department',
+                    figure=px.bar(dep_datafram, x='department',
                                    y='The number of people hired in each department',
                                    color='exit_per_dep',
-                                  title="hire and exit chart").update_layout(
+                                  title="نمودار استخدام و خروج کارکنان هر بخش").update_layout(
                         template='plotly_dark',
                         plot_bgcolor= 'rgba(0, 0, 0, 0)',
                         paper_bgcolor= 'rgba(0, 0, 0, 0)',
@@ -321,7 +323,7 @@ def exitdepFigure():
 
             ])
         ),
-    ])
+    ])"""
 
 def drawTable():
 
@@ -341,14 +343,15 @@ def drawTable():
                                              'color': 'white',
                                              'border': '1px solid blue',
 
-                                             'height': 10,
-                                             'lineHeight': '15px'
+                                             'height':55,
+                                             'lineHeight': '20px',
+                                             'whiteSpace': 'normal',
                                          },
 
 
 
 
-                                         )
+                  )
 
                 ])
 
@@ -413,7 +416,7 @@ def drawText5():
         dbc.Card(
             dbc.CardBody([
                 html.Div([
-                    html.H2([female, '👩🏻‍🦰' , html.Br(),male, "🧑🏻‍💼",],style={'color':'silver','font-weight':'bold'}),
+                    html.H2([female, "👩🏻‍💼" , html.Br(),male, "👨🏻‍💼",],style={'color':'silver','font-weight':'bold'}),
 
                 ], style={'textAlign': 'center'})
             ])
@@ -424,7 +427,7 @@ app.layout =html.Div([
 html.Div(children=[
     html.Div(children=[
         html.H1('Steel Company', style={'backgroundColor': 'darkslategray', 'color': 'white','font_family': 'Algerian','font-weight': 'bold'}),
-        html.H3('Human Resources dashboard', style={'fontsize': '100'}),
+        html.H3('Human Resources Dashboard', style={'fontsize': '100'}),
         html.H3('by Zohreh Kazemi'),
         html.Hr(),
         #html.Button([attrition_rate, '%', html.Br(), "نرخ خروج"], style=roundbutton),
@@ -465,39 +468,36 @@ html.Div(children=[
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                html.Label(['please select a graph:'], style={'font-weight': 'bold'}),
-                dcc.Dropdown(result.columns[1:], value=result.columns[1], id='input', multi=True,
-                             style={'backgroundColor': '#0C5962',"font-family": "sans-serif","color":"black",'font-weight': 'bold','font-size':23},),
+                    html.Label(['Bonus & Jobs :'], style={'font-weight': 'bold', 'textAlign': 'center'}),
 
-                html.Div(children=[
+                    dbc.Card(
+                        dbc.CardBody([
 
-                dcc.Graph(id='output_chart',config={
-        'displayModeBar': False
-    }),
+                            dcc.Dropdown(
 
-                ]),
+                                options=[
+                                    {'label': 'Job Positions ', 'value': 'graph5'},
+                                    {'label': 'Job Positions with bonuses', 'value': 'graph4'},
+                                    {'label': 'Bonus range of each job position', 'value': 'graph6'}
 
+                                ], value='graph5', id='bon', style={'backgroundColor': '#0C5962', "color": "black",
+                                                                    'font-weight': 'bold', 'font-size': 23},
 
-                ], width=8),
-                dbc.Col([
-                    html.H3("Annual Salary Table",style={'textAlign': 'center', 'backgroundColor': 'slate'}),
-                    drawTable(),
+                            ),
 
-                ], width=4),
-            ], align='center'),
-            html.Br(),
-            dbc.Row([
-                dbc.Col([
-                    html.Br(),
-                    countryFigure(),
-                    html.Br(),
-                    html.Br(),
+                            html.Div(children=[
+                                dcc.Graph(id='graph_bon', config={
+                                    'displayModeBar': False}),
 
-                ], width=3),
+                            ]),
 
+                        ])
+                    )
+
+                ], width=6),
 
                 dbc.Col([
-                    html.Label(['Age Group & Gender :'], style={'font-weight': 'bold'}),
+                    html.Label(['Age Group & Gender & Country :'], style={'font-weight': 'bold'}),
 
                     dbc.Card(
                         dbc.CardBody([
@@ -507,10 +507,11 @@ html.Div(children=[
                                 options=[
                                     {'label': 'Gender Chart', 'value': 'graph1'},
                                     {'label': 'Age Chart', 'value': 'graph2'},
-                                   # {'label': 'هیستوگرام جنسیت وسن', 'value': 'graph3'}
+                                    {'label': 'Country Chart', 'value': 'graph3'}
 
                                 ], value='graph2', id='radio',
-                                style={'backgroundColor': '#0C5962', "color": "black", 'font-weight': 'bold','font-size':22},
+                                style={'backgroundColor': '#0C5962', "color": "black", 'font-weight': 'bold',
+                                       'font-size': 22},
 
                             ),
 
@@ -526,38 +527,64 @@ html.Div(children=[
                 ], width=3),
 
                 dbc.Col([
-                    html.Label(['Bonus & Jobs :'], style={'font-weight': 'bold', 'textAlign': 'center'}),
+                    html.H3("Annual Salary Table", style={'textAlign': 'center', 'backgroundColor': 'slate'}),
+                    drawTable(),
+
+                ], width=3),
+            ]),
+
+            dbc.Row([
+
+                dbc.Col([
+                html.Label(['please select a graph:'], style={'font-weight': 'bold'}),
+
+                dbc.Card(
+                    dbc.CardBody([
+                    dcc.Dropdown(result.columns[1:], value=result.columns[1], id='input', multi=True,
+                             style={'backgroundColor': '#0C5962',"font-family": "sans-serif","color":"black",
+				    'font-weight': 'bold','font-size':23},),
+
+                    html.Div(children=[
+
+                    dcc.Graph(id='output_chart',config={
+        'displayModeBar': False
+    }),
+
+                ]),
+
+                    ])
+                )
+
+                ], width=8),
+                dbc.Col([
+                    html.Label(['please select a graph:'], style={'font-weight': 'bold'}),
 
                     dbc.Card(
                         dbc.CardBody([
+                           dcc.Dropdown(dep_datafram.columns[1:], value=dep_datafram.columns[1], id='Depinput', multi=True,
+                                 style={'backgroundColor': '#0C5962', "font-family": "sans-serif", "color": "black",
+                                        'font-weight': 'bold', 'font-size': 23}, ),
 
-                            dcc.Dropdown(
+                    html.Div(children=[
 
-                                options=[
-                                    {'label': 'Job Positions ', 'value': 'graph5'},
-                                    {'label': 'Job Positions with bonuses', 'value': 'graph4'},
-                                    {'label': 'Bonus range of each job position', 'value': 'graph6'}
+                        dcc.Graph(id='Dep_chart', config={
+                            'displayModeBar': False
+                        }),
 
-                                ], value='graph5', id='bon', style={'backgroundColor': '#0C5962', "color": "black",
-                                                                    'font-weight': 'bold','font-size':23},
-
-                            ),
-
-                            html.Div(children=[
-                                dcc.Graph(id='graph_bon', config={
-                                    'displayModeBar': False}),
-
-                            ]),
+                    ]),
 
                         ])
-                    )
 
-                ], width=6),
-             ]),
+                    )
+                ], width=4),
+
+            ], align='center'),
+
 
         ]), color = 'dark'
     )
 ])
+
 @app.callback(Output('output_chart', 'figure',),
               Input('input', 'value'))
 
@@ -567,16 +594,13 @@ def hire_exitFigure(x):
         result,  # dataframe
         x='year',  # x
         y=x,
-        labels={"x": "year", "y": "number of employee"},  # define lable
-        #color='year',
         color_continuous_scale=px.colors.sequential.RdBu,  # color
-        # text=offence_district.groupby("Offence")["Total"].agg(sum),#text
         title="Hire and Exit Chart", # title
         orientation="v" , # vertical bar chart
         )
     figur.update_layout(title_x=0.5,
                        #plot_bgcolor='#0C0F12' ,
-                       title_font_size=35,
+                       title_font_size=23,
                        template='plotly_dark',
                        plot_bgcolor='rgba(0, 0, 0, 0)',
                        paper_bgcolor='rgba(0, 0, 0, 0)',
@@ -589,6 +613,39 @@ def hire_exitFigure(x):
 
 
     return figur
+
+
+@app.callback(Output('Dep_chart', 'figure',),
+              Input('Depinput', 'value'))
+
+def hire_exitFigure_perDep(i):
+
+    depfigur = px.bar(
+        dep_datafram,  # dataframe
+        x=i,  # x
+        y='Department',
+        labels={"x": "Department", "y": "number of employee"},  # define lable
+        color_discrete_sequence=px.colors.sequential.Rainbow_r,  # color
+        title="Hire and Exit employees in each department", # title
+        orientation ="h" , # vertical bar chart
+        )
+    depfigur.update_layout(title_x=0.5,
+                       title_font_size=25,
+                       template='plotly_dark',
+                       plot_bgcolor='rgba(0, 0, 0, 0)',
+                       paper_bgcolor='rgba(0, 0, 0, 0)',
+                       xaxis_title="Number",
+                       yaxis_title="Department",
+
+
+                       )
+
+
+
+    return depfigur
+
+
+
 
 
 
@@ -607,6 +664,7 @@ def gender_age(value):
                         xaxis_title="",
                         yaxis_title="",
                         title_x=.5,
+                        title_font_size=25,
 
 
                     )
@@ -614,20 +672,22 @@ def gender_age(value):
 
 
 
-   # if value=='graph3':
-        #  return px.bar(data,x='Gender',y='Age',color='AgeGroup Age',barmode='group',
-                             #     title="نمودار توزیع کارکنان بر حسب سن و جنسیت").update_layout(
-                       # template='plotly_dark',
-                      #  plot_bgcolor= 'rgba(0, 0, 0, 0)',
-                      #  paper_bgcolor= 'rgba(0, 0, 0, 0)',
-                       # xaxis_title="",
-                       # yaxis_title="",
-                       # title_x=.5,
-                      #  yaxis=dict(
-                      #  showticklabels=False,
-                      #  title='',
-             # ),
-               #     )
+    if value=='graph3':
+        return  px.pie(countryDf, names='Country',
+                                   values='Number',
+                                  title="Disterbution chart of employees by Country",color='Country').update_layout(
+                        template='plotly_dark',
+                        plot_bgcolor= 'rgba(0, 0, 0, 0)',
+                        paper_bgcolor= 'rgba(0, 0, 0, 0)',
+                        xaxis_title="",
+                        yaxis_title="",
+                        title_x=.5,
+                        title_font_size=25,
+                        uniformtext=dict(minsize=20, mode='hide'),
+                        #autosize=False,width=500,height=485
+
+                    )
+
 
 
     else:
@@ -639,6 +699,7 @@ def gender_age(value):
                         template='plotly_dark',
                         plot_bgcolor= 'rgba(0, 0, 0, 0)',
                         paper_bgcolor= 'rgba(0, 0, 0, 0)',
+                        title_font_size=25,
                         uniformtext = dict(minsize = 20, mode = 'hide'),
                         title_x=.5,
 
@@ -661,10 +722,10 @@ def bouns(value):
                                                 template='plotly_dark',
                                                 plot_bgcolor= 'rgba(0, 0, 0, 0)',
                                                 paper_bgcolor= 'rgba(0, 0, 0, 0)',
-                                                title_x=.5,
-		                                xaxis_title="Number",
+                                                xaxis_title="Number",
                                                 yaxis_title="Jobs",
-
+                                                title_font_size=25,
+                                                title_x=.5,
 
 
 
@@ -681,25 +742,30 @@ def bouns(value):
                                                 template='plotly_dark',
                                                 plot_bgcolor= 'rgba(0, 0, 0, 0)',
                                                 paper_bgcolor= 'rgba(0, 0, 0, 0)',
-                                                title_x=.5,
-		                                xaxis_title="Jobs",
+                                                xaxis_title="Jobs",
                                                 yaxis_title="Number",
-
+                                                title_font_size=25,
+                                                title_x=.5,
 
 
                     )
 
 
-    else:
-        return px.bar(data,x='Job Title',y='bonus%',
-                      color='AveGroup Bonus',color_discrete_sequence=px.colors.sequential.Rainbow_r,title="Bonus range of each job position").update_yaxes(showticklabels=False).update_layout(
-                     template='plotly_dark',
-                     plot_bgcolor='rgba(0, 0, 0, 0)',
-                     paper_bgcolor='rgba(0, 0, 0, 0)',
-                     title_x=.5,
-		     xaxis_title="Jobs",
-                     yaxis_title="Average Bonus% (It is displayed on the bar)",
 
+
+    else:
+
+        return px.bar(data, x='Job Title', y='bonus%',
+
+                      color='AveGroup Bonus%', color_discrete_sequence=px.colors.sequential.Rainbow_r,
+                      title="Bonus range of each job position").update_yaxes(showticklabels=False).update_layout(
+            template='plotly_dark',
+            plot_bgcolor='rgba(0, 0, 0, 0)',
+            paper_bgcolor='rgba(0, 0, 0, 0)',
+            title_x=.5,
+            xaxis_title="Jobs",
+            yaxis_title="Average Bonus% (Showing on the bar)",
+            title_font_size=25,
 
         )
 
