@@ -1,18 +1,10 @@
 import dash_bootstrap_components as dbc
-#import plotly.express as px
-
-#import matplotlib.pyplot as plt
-#import numpy as np
-#from plotly.tools import mpl_to_plotly
-#import webbrowser
-#from threading import Timer
 
 import random
 import pandas as pd
 import plotly.express as px
-#pd.options.mode.chained_assignment = None  # default='warn'
+pd.options.mode.chained_assignment = None  # default='warn'
 from dash import Dash, html, dcc, Input, Output,dash_table
-#import plotly.graph_objects as go
 
 url="https://raw.githubusercontent.com/zohrehkazemi/pyDash/main/c-sample.csv"
 
@@ -173,6 +165,7 @@ genderDf=pd.DataFrame({'Gender':data['Gender'].value_counts().keys(),'Number':da
 sum_employee=male+female
 perfemal=(female/sum_employee)*100
 permale=(male/sum_employee)*100
+mean_age=data["Age"].mean()
 
 ####################################################salary process#######################
 salary=((data.loc[:,['Annual Salary']]))
@@ -195,7 +188,6 @@ salaryDf.loc[len(salaryDf)] = new_row
 salaryDf= salaryDf.reset_index(drop=True)
 
 #################################################Bouns process#######################################
-
 help_list=data[["Department","Bonus %"]].groupby("Department").value_counts()
 int_bon=data['Bonus %'].str.extract(r'(\d.)', expand=False)
 int_bon=int_bon.str.replace('%','')
@@ -204,34 +196,38 @@ jobs=data['Job Title'].value_counts(sort=False).sort_index(ascending=True).keys(
 number_employee_per_job=data['Job Title'].value_counts(sort=False).sort_index(ascending=True).tolist()
 jobDf=pd.DataFrame({'jobs':jobs,'number employee':number_employee_per_job})
 
-zerobon=data['bonus%'].value_counts()[0]
-contain_bon=data['bonus%'].value_counts().sum()
 
-total_bon=contain_bon-zerobon
 zero = data['bonus%'] == 0
 data= data[~zero]
 
+
+contain_bon=data['bonus%'].value_counts().sum()
+
 data1=pd.DataFrame(data[['bonus%','Job Title','Department']].groupby('Department').value_counts())
 
-"""print(zerobon,contain_bon,total_bon)
-print(data['int_bon'].describe())
 
-print(data['Job Title'].value_counts(sort=False).sort_index(ascending=True).keys().tolist())
-print(data['Job Title'].value_counts(sort=False).sort_index(ascending=True).tolist())"""
 jobDf_bon=pd.DataFrame({'jobs':data['Job Title'].value_counts(sort=False).sort_index(ascending=True).keys().tolist(),
                         'count':data['Job Title'].value_counts(sort=False).sort_index(ascending=True).tolist()})
 
 
 
-#print(data[['int_bon','Job Title']].groupby('int_bon').value_counts().keys())
 
-labels=['5-10','10-20','20-30','30-40']
-bins=[5,10,20,30,40]
+labels=['1-10','10-20','20-30','30-40','40-50']
+bins=[1,10,20,30,40,50]
 data['AveGroup Bonus%'] = pd.cut(data['bonus%'], bins=bins, labels=labels, right=False)
+tuplelist=data[['AveGroup Bonus%','Job Title']].groupby('Job Title').value_counts().keys().tolist()
+keylist=[]
+valuelist=[]
+for i in tuplelist:
+        keylist.append(i[0])
+#print(keylist)
+for j in tuplelist:
+    valuelist.append(j[1])
+#print(valuelist)
 
-"""print(max(data['bonus%']))
-print(data['AveGroup Bonus'].value_counts())
-print(data[['AveGroup Bonus','Job Title']].groupby('Job Title').value_counts())"""
+
+job_bonrange_df=pd.DataFrame({"JobTitle":keylist,"BonusRange%":valuelist,
+                              "NumberEmployees":data[['AveGroup Bonus%','Job Title']].groupby('Job Title').value_counts().tolist()})
 
 
 #******************************************************************************************##
@@ -239,34 +235,8 @@ print(data[['AveGroup Bonus','Job Title']].groupby('Job Title').value_counts())"
 app = Dash(external_stylesheets=[dbc.themes.JOURNAL,dbc.themes.SOLAR])
 server=app.server
 
-def bounFigure():
-    return html.Div([
-        dbc.Card(
-            dbc.CardBody([
-                dcc.Graph(
-                    figure=px.pie(ageDf, names='Age Range',
-                                   values='Number',
-                                   color='Age Range',
-                                  title="نمودار توزیع کارکنان بر حسب سن").update_layout(
-                        template='plotly_dark',
-                        plot_bgcolor= 'rgba(0, 0, 0, 0)',
-                        paper_bgcolor= 'rgba(0, 0, 0, 0)',
-                        #xaxis_title="",
-                        #yaxis_title="",
-                        title_x=.5,
 
-                    ).update_coloraxes(showscale=False),
-
-                config={
-                        'displayModeBar': False
-                    }
-                ),
-
-            ])
-        ),
-    ])
-
-def countryFigure():
+'''def countryFigure():
     colors = ["#" + ''.join([random.choice('0123456789ABCDEF') for i in range(6)])
               for j in range(len(name_country))]
 
@@ -295,35 +265,9 @@ def countryFigure():
 
             ])
         ),
-    ])
+    ])'''
 
 
-"""def exitdepFigure():
-    return html.Div([
-        dbc.Card(
-            dbc.CardBody([
-                dcc.Graph(
-                    figure=px.bar(dep_datafram, x='department',
-                                   y='The number of people hired in each department',
-                                   color='exit_per_dep',
-                                  title="نمودار استخدام و خروج کارکنان هر بخش").update_layout(
-                        template='plotly_dark',
-                        plot_bgcolor= 'rgba(0, 0, 0, 0)',
-                        paper_bgcolor= 'rgba(0, 0, 0, 0)',
-                        xaxis_title="",
-                        yaxis_title="",
-                        title_x=.5,
-
-                    ).update_coloraxes(showscale=False),
-
-                config={
-                        'displayModeBar': False
-                    }
-                ),
-
-            ])
-        ),
-    ])"""
 
 def drawTable():
 
@@ -701,9 +645,11 @@ def gender_age(value):
                         paper_bgcolor= 'rgba(0, 0, 0, 0)',
                         title_font_size=25,
                         uniformtext = dict(minsize = 20, mode = 'hide'),
-                        title_x=.5,
+                        title_x=.5,).add_annotation(dict(x=0.5, y=0.5,  align='center',
+                        xref = "paper", yref = "paper",
+                        showarrow = False, font_size=17,
+                        text=round(mean_age)))
 
-                    )
 
 ##########bouns def################
 
@@ -755,9 +701,10 @@ def bouns(value):
 
     else:
 
-        return px.bar(data, x='Job Title', y='bonus%',
-
-                      color='AveGroup Bonus%', color_discrete_sequence=px.colors.sequential.Rainbow_r,
+        
+        return px.bar(job_bonrange_df, x="JobTitle", y="NumberEmployees",
+                     color="BonusRange%",
+                     barmode='stack',
                       title="Bonus range of each job position").update_yaxes(showticklabels=False).update_layout(
             template='plotly_dark',
             plot_bgcolor='rgba(0, 0, 0, 0)',
@@ -773,9 +720,8 @@ def bouns(value):
 #port = 5000 # or simply open on the default `8050` port
 
 #def open_browser():
-	#webbrowser.open_new("http://localhost:{}".format(8888))
+	#webbrowser.open_new("http://localhost:{}".format(port))
 
-# Run app and display result inline in the notebook
 
 if __name__ == '__main__':
     app.run_server(host='0.0.0.0',port=10000)
